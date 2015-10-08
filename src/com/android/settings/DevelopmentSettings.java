@@ -145,6 +145,8 @@ public class DevelopmentSettings extends RestrictedSettingsFragment
 
     private static final String OPENGL_TRACES_KEY = "enable_opengl_traces";
 
+    private static final String ALLOW_SIGNATURE_FAKE_KEY = "allow_signature_fake";
+
     private static final String IMMEDIATELY_DESTROY_ACTIVITIES_KEY
             = "immediately_destroy_activities";
     private static final String APP_PROCESS_LIMIT_KEY = "app_process_limit";
@@ -219,6 +221,7 @@ public class DevelopmentSettings extends RestrictedSettingsFragment
     private Object mSelectedRootValue;
     private PreferenceScreen mDevelopmentTools;
 
+    private CheckBoxPreference mAllowSignatureFake;
     private CheckBoxPreference mImmediatelyDestroyActivities;
     private ListPreference mAppProcessLimit;
 
@@ -238,6 +241,8 @@ public class DevelopmentSettings extends RestrictedSettingsFragment
     private Dialog mEnableDialog;
     private Dialog mAdbDialog;
     private Dialog mAdbKeysDialog;
+
+    private Dialog mAllowSignatureFakeDialog;
 
     private Dialog mRootDialog;
 
@@ -331,6 +336,10 @@ public class DevelopmentSettings extends RestrictedSettingsFragment
         mAnimatorDurationScale = addListPreference(ANIMATOR_DURATION_SCALE_KEY);
         mOverlayDisplayDevices = addListPreference(OVERLAY_DISPLAY_DEVICES_KEY);
         mOpenGLTraces = addListPreference(OPENGL_TRACES_KEY);
+
+        mAllowSignatureFake = (CheckBoxPreference) findPreference(ALLOW_SIGNATURE_FAKE_KEY);
+        mAllPrefs.add(mAllowSignatureFake);
+        mResetCbPrefs.add(mAllowSignatureFake);
 
         mImmediatelyDestroyActivities = (CheckBoxPreference) findPreference(
                 IMMEDIATELY_DESTROY_ACTIVITIES_KEY);
@@ -569,6 +578,7 @@ public class DevelopmentSettings extends RestrictedSettingsFragment
         updateAnimationScaleOptions();
         updateOverlayDisplayDevicesOptions();
         updateOpenGLTracesOptions();
+        updateAllowSignatureFakeOption();
         updateImmediatelyDestroyActivitiesOptions();
         updateAppProcessLimitOptions();
         updateShowAllANRsOptions();
@@ -1100,6 +1110,11 @@ public class DevelopmentSettings extends RestrictedSettingsFragment
         }
     }
 
+    private void updateAllowSignatureFakeOption() {
+        updateCheckBox(mAllowSignatureFake, Settings.Secure.getInt(
+                getActivity().getContentResolver(), Settings.Secure.ALLOW_SIGNATURE_FAKE, 0) != 0);
+    }
+
     private void updateImmediatelyDestroyActivitiesOptions() {
         updateCheckBox(mImmediatelyDestroyActivities, Settings.Global.getInt(
             getActivity().getContentResolver(), Settings.Global.ALWAYS_FINISH_ACTIVITIES, 0) != 0);
@@ -1358,6 +1373,24 @@ public class DevelopmentSettings extends RestrictedSettingsFragment
             writeDisableOverlaysOption();
         } else if (preference == mShowCpuUsage) {
             writeCpuUsageOptions();
+        } else if (preference == mAllowSignatureFake) {
+            if (mAllowSignatureFake.isChecked()) {
+                if (mAllowSignatureFakeDialog != null) {
+                    dismissDialogs();
+                }
+                mAllowSignatureFakeDialog = new AlertDialog.Builder(getActivity()).setMessage(
+                        getResources().getString(R.string.allow_signature_fake_warning))
+                        .setTitle(R.string.allow_signature_fake)
+                        .setIconAttribute(android.R.attr.alertDialogIcon)
+                        .setPositiveButton(android.R.string.yes, this)
+                        .setNegativeButton(android.R.string.no, this)
+                        .show();
+                mAllowSignatureFakeDialog.setOnDismissListener(this);
+            } else {
+                Settings.Secure.putInt(getActivity().getContentResolver(),
+                        Settings.Secure.ALLOW_SIGNATURE_FAKE, 0);
+                updateAllowSignatureFakeOption();
+            }
         } else if (preference == mImmediatelyDestroyActivities) {
             writeImmediatelyDestroyActivitiesOptions();
         } else if (preference == mShowAllANRs) {
@@ -1501,6 +1534,10 @@ public class DevelopmentSettings extends RestrictedSettingsFragment
             mRootDialog.dismiss();
             mRootDialog = null;
         }
+        if (mAllowSignatureFakeDialog != null) {
+            mAllowSignatureFakeDialog.dismiss();
+            mAllowSignatureFakeDialog = null;
+        }
     }
 
     public void onClick(DialogInterface dialog, int which) {
@@ -1548,6 +1585,14 @@ public class DevelopmentSettings extends RestrictedSettingsFragment
                 // Reset the option
                 writeRootAccessOptions("0");
             }
+        } else if (dialog == mAllowSignatureFakeDialog) {
+            if (which == DialogInterface.BUTTON_POSITIVE) {
+                Settings.Secure.putInt(getActivity().getContentResolver(),
+                        Settings.Secure.ALLOW_SIGNATURE_FAKE, 1);
+            } else {
+                // Reset the toggle
+                mAllowSignatureFake.setChecked(false);
+            }
         }
     }
 
@@ -1563,6 +1608,9 @@ public class DevelopmentSettings extends RestrictedSettingsFragment
                 mEnabledSwitch.setChecked(false);
             }
             mEnableDialog = null;
+        } else if (dialog == mAllowSignatureFakeDialog) {
+            updateAllowSignatureFakeOption();
+            mAllowSignatureFakeDialog = null;
         }
     }
 
