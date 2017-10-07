@@ -19,7 +19,6 @@
   <string name="reset">Sıfırla</string>
   <string name="attention">Dikkat</string>
   <string name="enabled">Etkin</string>
-  <string name="disabled">Devre dışı</string>
   <string name="default_string">Varsayılan</string>
   <string name="additional_options_title">Ek seçenekler</string>
   <string name="reset_message">Tüm değerler varsayılana döndürülsün mü?</string>

@@ -19,7 +19,6 @@
   <string name="reset">Restablecer</string>
   <string name="attention">Atención</string>
   <string name="enabled">Habilitado</string>
-  <string name="disabled">Deshabilitado</string>
   <string name="default_string">Defecto</string>
   <string name="additional_options_title">Opciones adicionales</string>
   <string name="reset_message">¿Restablecer todo a sus valores por defecto?</string>

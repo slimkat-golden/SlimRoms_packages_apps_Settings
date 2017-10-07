@@ -19,7 +19,6 @@
   <string name="reset">Zurücksetzen</string>
   <string name="attention">Achtung</string>
   <string name="enabled">Aktiviert</string>
-  <string name="disabled">Deaktiviert</string>
   <string name="default_string">Standard</string>
   <string name="additional_options_title">Zusätzliche Einstellungen</string>
   <string name="reset_message">Standardeinstellungen wiederherstellen?</string>

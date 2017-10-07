@@ -19,7 +19,6 @@
   <string name="reset">Επαναφορά</string>
   <string name="attention">Προσοχή</string>
   <string name="enabled">Ενεργοποιημένο</string>
-  <string name="disabled">Απενεργοποιημένο</string>
   <string name="default_string">Προεπιλογή</string>
   <string name="additional_options_title">Επιπλέον επιλογές</string>
   <string name="reset_message">Επαναφορά όλων των καταχωρήσεων στις προεπιλογές;</string>
