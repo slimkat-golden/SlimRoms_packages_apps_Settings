@@ -648,10 +648,6 @@ public class Settings extends PreferenceActivity
                 if (!showDev) {
                     target.remove(i);
                 }
-            } else if (id == R.id.superuser) {
-                if (!superuserEnabled()) {
-                    target.remove(i);
-                }
             }
 
             if (i < target.size() && target.get(i) == header
@@ -670,20 +666,6 @@ public class Settings extends PreferenceActivity
                 mHeaderIndexMap.put(id, i);
                 i++;
             }
-        }
-    }
-
-    private boolean superuserEnabled() {
-        int val = android.os.SystemProperties.getInt("persist.sys.root_access", 0);
-        switch (val) {
-            case 0:
-            case 2:
-                return false;
-            case 1:
-            case 3:
-                return true;
-            default:
-                return false;
         }
     }
 
